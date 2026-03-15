@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulseKit — 132 living data components</title>
+<meta name="description" content="132 visualization modes. Ring gauges, VU meters, heartbeat monitors, spectrum analyzers. One canvas, 60fps, two props, zero deps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#fff;--bg2:#f7f7f7;--bg3:#efefef;--border:#e2e2e2;--dim:#aaa;--text:#666;--mid:#888;--dark:#333;--black:#111;--mono:'Geist Mono','SF Mono',monospace;--serif:'Newsreader',Georgia,serif;--sans:system-ui,-apple-system,sans-serif;--focus-ring:2px solid var(--black)}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:rgba(0,0,0,.08)}
+a{color:var(--black);text-decoration:none}a:hover{text-decoration:underline}
+a:focus-visible,button:focus-visible{outline:var(--focus-ring);outline-offset:3px;border-radius:2px}
+
+/* Skip link */
+.skip{position:absolute;top:-40px;left:0;background:var(--black);color:#fff;padding:8px 16px;z-index:200;font-size:14px;transition:top .2s}
+.skip:focus{top:0}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.16em;color:var(--black)}
+.nav-r{display:flex;gap:20px;align-items:center}
+.nav-r a{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.nav-r a:hover{color:var(--black);text-decoration:none}
+.ver{font-family:var(--mono);font-size:8px;padding:3px 8px;border:1px solid var(--border);border-radius:3px;color:var(--dim)}
+
+.container{max-width:960px;margin:0 auto;padding:0 28px}
+
+/* Hero */
+.hero{padding:150px 0 60px;text-align:center}
+.hero-over{font-family:var(--mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);margin-bottom:24px;opacity:0;animation:fi .5s ease forwards .1s}
+.hero h1{font-family:var(--serif);font-size:clamp(34px,5.5vw,52px);font-weight:400;color:var(--black);line-height:1.12;margin-bottom:16px;opacity:0;animation:fu .6s ease forwards .25s}
+.hero h1 em{font-style:italic}
+.hero-sub{font-size:16px;max-width:480px;margin:0 auto 32px;line-height:1.7;color:var(--text);opacity:0;animation:fu .5s ease forwards .45s}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fu .5s ease forwards .6s}
+.btn{font-family:var(--mono);font-size:11px;padding:10px 20px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--dark);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--black);color:var(--black)}
+.btn-dark{background:var(--black);color:#fff;border-color:var(--black)}
+.btn-dark:hover{background:#333}
+.btn .cp{font-size:8px;color:var(--dim);border:1px solid var(--border);padding:1px 5px;border-radius:3px}
+
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Stats */
+.stat-row{display:flex;gap:1px;margin:24px 0;background:var(--border);border-radius:8px;overflow:hidden}
+.stat{flex:1;padding:16px;background:var(--bg);text-align:center}
+.stat-val{font-family:var(--mono);font-size:24px;font-weight:500;color:var(--black)}
+.stat-label{font-family:var(--mono);font-size:7px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+
+/* Sections */
+section{padding:56px 0;border-top:1px solid var(--border)}
+section h2{font-family:var(--serif);font-size:clamp(24px,3vw,30px);font-weight:400;color:var(--black);margin-bottom:6px}
+section>p{font-size:14px;margin-bottom:16px;max-width:500px;line-height:1.7}
+
+/* Category groups */
+.cat-group{margin-bottom:28px}
+.cat-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cat-count{font-size:9px;color:var(--dim);background:var(--bg2);border:1px solid var(--border);padding:1px 6px;border-radius:10px}
+
+/* Mode grid */
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.mode-cell{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;transition:border-color .15s,box-shadow .15s}
+.mode-cell:hover{border-color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.mode-cell canvas{display:block;margin:0 auto 4px;border-radius:4px;width:100%;height:60px}
+.mode-cell span{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:.03em;display:block}
+
+/* Code */
+pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 18px;overflow-x:auto;margin:14px 0;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--dark)}
+pre .kw{color:var(--black);font-weight:500}
+pre .str{color:var(--mid)}
+pre .cmt{color:var(--dim)}
+
+/* Footer */
+footer{border-top:1px solid var(--border);padding:36px 0;text-align:center}
+footer p{font-family:var(--mono);font-size:9px;color:var(--dim)}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:0 16px}
+  .mode-grid{grid-template-columns:repeat(3,1fr)}
+  .stat-row{flex-wrap:wrap}
+  .stat{min-width:33%}
+  .nav-r a:not(:last-child){display:none}
+}
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+/* High contrast */
+@media(forced-colors:active){
+  .mode-cell{border:2px solid CanvasText}
+  .btn{border:2px solid ButtonText}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<nav role="navigation" aria-label="Main navigation">
+  <span class="nav-logo">PULSEKIT</span>
+  <div class="nav-r">
+    <a href="#modes">132 modes</a>
+    <a href="#code">API</a>
+    <a href="https://github.com/dragoon0x/pulsekit">GitHub</a>
+    <span class="ver" aria-label="Version 2.0.0">v2.0.0</span>
+  </div>
+</nav>
+
+<main id="main">
+<div class="container">
+
+<section class="hero" style="border:none">
+  <div class="hero-over" aria-hidden="true">132 modes &middot; one canvas &middot; 60fps</div>
+  <h1>Living data<br><em>components.</em></h1>
+  <p class="hero-sub">Ring gauges, VU meters, heartbeat monitors, spectrum analyzers, radar sweeps, thermometers, compass dials. One canvas per component, 60fps interpolation, two props.</p>
+  <div class="hero-actions">
+    <button class="btn btn-dark" onclick="navigator.clipboard.writeText('npm install pulsekit').then(function(){document.getElementById('cp1').textContent='copied';setTimeout(function(){document.getElementById('cp1').textContent='copy'},1500)})">npm install pulsekit <span class="cp" id="cp1" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.5)">copy</span></button>
+    <a href="https://github.com/dragoon0x/pulsekit" class="btn">GitHub &rarr;</a>
+  </div>
+</section>
+
+<section style="border:none;padding-top:0">
+  <div class="stat-row" role="list" aria-label="Key statistics">
+    <div class="stat" role="listitem"><div class="stat-val">132</div><div class="stat-label">Modes</div></div>
+    <div class="stat" role="listitem"><div class="stat-val">60</div><div class="stat-label">FPS</div></div>
+    <div class="stat" role="listitem"><div class="stat-val">25</div><div class="stat-label">Categories</div></div>
+    <div class="stat" role="listitem"><div class="stat-val">2</div><div class="stat-label">Props</div></div>
+    <div class="stat" role="listitem"><div class="stat-val">0</div><div class="stat-label">Deps</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Two props. That's it.</h2>
+<pre><span class="kw">import</span> { Pulse } <span class="kw">from</span> <span class="str">'pulsekit'</span>
+
+&lt;Pulse value={cpu} mode=<span class="str">"ring"</span> /&gt;   <span class="cmt">// value + mode. done.</span></pre>
+  <p>Feed it data however you like. WebSocket, polling, random walk. PulseKit lerps between updates so even infrequent data looks smooth.</p>
+</section>
+
+<section id="modes">
+  <h2>132 modes, all alive.</h2>
+  <p>Every canvas below runs live with simulated data. Nothing is static. Scroll to explore all 25 categories.</p>
+  <div class="cat-group" role="region" aria-label="Core modes"><h3 class="cat-label">Core <span class="cat-count">30</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="ring" role="img" aria-label="Ring visualization"><canvas width="200" height="140"></canvas><span>Ring</span></div><div class="mode-cell" data-mode="gauge" role="img" aria-label="Gauge visualization"><canvas width="200" height="140"></canvas><span>Gauge</span></div><div class="mode-cell" data-mode="bar" role="img" aria-label="Bar visualization"><canvas width="200" height="140"></canvas><span>Bar</span></div><div class="mode-cell" data-mode="spark" role="img" aria-label="Spark visualization"><canvas width="200" height="140"></canvas><span>Spark</span></div><div class="mode-cell" data-mode="ticker" role="img" aria-label="Ticker visualization"><canvas width="200" height="140"></canvas><span>Ticker</span></div><div class="mode-cell" data-mode="delta" role="img" aria-label="Delta visualization"><canvas width="200" height="140"></canvas><span>Delta</span></div><div class="mode-cell" data-mode="dot" role="img" aria-label="Dot visualization"><canvas width="200" height="140"></canvas><span>Dot</span></div><div class="mode-cell" data-mode="wave" role="img" aria-label="Wave visualization"><canvas width="200" height="140"></canvas><span>Wave</span></div><div class="mode-cell" data-mode="heat" role="img" aria-label="Heat visualization"><canvas width="200" height="140"></canvas><span>Heat</span></div><div class="mode-cell" data-mode="meter" role="img" aria-label="Meter visualization"><canvas width="200" height="140"></canvas><span>Meter</span></div><div class="mode-cell" data-mode="needle" role="img" aria-label="Needle visualization"><canvas width="200" height="140"></canvas><span>Needle</span></div><div class="mode-cell" data-mode="heartbeat" role="img" aria-label="Heartbeat visualization"><canvas width="200" height="140"></canvas><span>Heartbeat</span></div><div class="mode-cell" data-mode="spectrum" role="img" aria-label="Spectrum visualization"><canvas width="200" height="140"></canvas><span>Spectrum</span></div><div class="mode-cell" data-mode="bubble" role="img" aria-label="Bubble visualization"><canvas width="200" height="140"></canvas><span>Bubble</span></div><div class="mode-cell" data-mode="radar" role="img" aria-label="Radar visualization"><canvas width="200" height="140"></canvas><span>Radar</span></div><div class="mode-cell" data-mode="signal" role="img" aria-label="Signal visualization"><canvas width="200" height="140"></canvas><span>Signal</span></div><div class="mode-cell" data-mode="battery" role="img" aria-label="Battery visualization"><canvas width="200" height="140"></canvas><span>Battery</span></div><div class="mode-cell" data-mode="equalizer" role="img" aria-label="Equalizer visualization"><canvas width="200" height="140"></canvas><span>Equalizer</span></div><div class="mode-cell" data-mode="pendulum" role="img" aria-label="Pendulum visualization"><canvas width="200" height="140"></canvas><span>Pendulum</span></div><div class="mode-cell" data-mode="ripple" role="img" aria-label="Ripple visualization"><canvas width="200" height="140"></canvas><span>Ripple</span></div><div class="mode-cell" data-mode="orbit" role="img" aria-label="Orbit visualization"><canvas width="200" height="140"></canvas><span>Orbit</span></div><div class="mode-cell" data-mode="flame" role="img" aria-label="Flame visualization"><canvas width="200" height="140"></canvas><span>Flame</span></div><div class="mode-cell" data-mode="tide" role="img" aria-label="Tide visualization"><canvas width="200" height="140"></canvas><span>Tide</span></div><div class="mode-cell" data-mode="compass" role="img" aria-label="Compass visualization"><canvas width="200" height="140"></canvas><span>Compass</span></div><div class="mode-cell" data-mode="thermometer" role="img" aria-label="Thermometer visualization"><canvas width="200" height="140"></canvas><span>Thermometer</span></div><div class="mode-cell" data-mode="clock" role="img" aria-label="Clock visualization"><canvas width="200" height="140"></canvas><span>Clock</span></div><div class="mode-cell" data-mode="progress" role="img" aria-label="Progress visualization"><canvas width="200" height="140"></canvas><span>Progress</span></div><div class="mode-cell" data-mode="arc" role="img" aria-label="Arc visualization"><canvas width="200" height="140"></canvas><span>Arc</span></div><div class="mode-cell" data-mode="segments" role="img" aria-label="Segments visualization"><canvas width="200" height="140"></canvas><span>Segments</span></div><div class="mode-cell" data-mode="binary" role="img" aria-label="Binary visualization"><canvas width="200" height="140"></canvas><span>Binary</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Shape modes"><h3 class="cat-label">Shape <span class="cat-count">6</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="donut" role="img" aria-label="Donut visualization"><canvas width="200" height="140"></canvas><span>Donut</span></div><div class="mode-cell" data-mode="pie" role="img" aria-label="Pie visualization"><canvas width="200" height="140"></canvas><span>Pie</span></div><div class="mode-cell" data-mode="dial" role="img" aria-label="Dial visualization"><canvas width="200" height="140"></canvas><span>Dial</span></div><div class="mode-cell" data-mode="knob" role="img" aria-label="Knob visualization"><canvas width="200" height="140"></canvas><span>Knob</span></div><div class="mode-cell" data-mode="slider" role="img" aria-label="Slider visualization"><canvas width="200" height="140"></canvas><span>Slider</span></div><div class="mode-cell" data-mode="step" role="img" aria-label="Step visualization"><canvas width="200" height="140"></canvas><span>Step</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Pattern modes"><h3 class="cat-label">Pattern <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="spiral" role="img" aria-label="Spiral visualization"><canvas width="200" height="140"></canvas><span>Spiral</span></div><div class="mode-cell" data-mode="helix" role="img" aria-label="Helix visualization"><canvas width="200" height="140"></canvas><span>Helix</span></div><div class="mode-cell" data-mode="dna" role="img" aria-label="Dna visualization"><canvas width="200" height="140"></canvas><span>Dna</span></div><div class="mode-cell" data-mode="spring" role="img" aria-label="Spring visualization"><canvas width="200" height="140"></canvas><span>Spring</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Waveform modes"><h3 class="cat-label">Waveform <span class="cat-count">6</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="oscilloscope" role="img" aria-label="Oscilloscope visualization"><canvas width="200" height="140"></canvas><span>Oscilloscope</span></div><div class="mode-cell" data-mode="seismograph" role="img" aria-label="Seismograph visualization"><canvas width="200" height="140"></canvas><span>Seismograph</span></div><div class="mode-cell" data-mode="ecg" role="img" aria-label="Ecg visualization"><canvas width="200" height="140"></canvas><span>Ecg</span></div><div class="mode-cell" data-mode="pulse-wave" role="img" aria-label="Pulse Wave visualization"><canvas width="200" height="140"></canvas><span>Pulse Wave</span></div><div class="mode-cell" data-mode="sawtooth" role="img" aria-label="Sawtooth visualization"><canvas width="200" height="140"></canvas><span>Sawtooth</span></div><div class="mode-cell" data-mode="square-wave" role="img" aria-label="Square Wave visualization"><canvas width="200" height="140"></canvas><span>Square Wave</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Audio modes"><h3 class="cat-label">Audio <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="volume" role="img" aria-label="Volume visualization"><canvas width="200" height="140"></canvas><span>Volume</span></div><div class="mode-cell" data-mode="loudness" role="img" aria-label="Loudness visualization"><canvas width="200" height="140"></canvas><span>Loudness</span></div><div class="mode-cell" data-mode="decibel" role="img" aria-label="Decibel visualization"><canvas width="200" height="140"></canvas><span>Decibel</span></div><div class="mode-cell" data-mode="waveform" role="img" aria-label="Waveform visualization"><canvas width="200" height="140"></canvas><span>Waveform</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Instrument modes"><h3 class="cat-label">Instrument <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="speedometer" role="img" aria-label="Speedometer visualization"><canvas width="200" height="140"></canvas><span>Speedometer</span></div><div class="mode-cell" data-mode="tachometer" role="img" aria-label="Tachometer visualization"><canvas width="200" height="140"></canvas><span>Tachometer</span></div><div class="mode-cell" data-mode="altimeter" role="img" aria-label="Altimeter visualization"><canvas width="200" height="140"></canvas><span>Altimeter</span></div><div class="mode-cell" data-mode="pressure" role="img" aria-label="Pressure visualization"><canvas width="200" height="140"></canvas><span>Pressure</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Time modes"><h3 class="cat-label">Time <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="hourglass" role="img" aria-label="Hourglass visualization"><canvas width="200" height="140"></canvas><span>Hourglass</span></div><div class="mode-cell" data-mode="stopwatch" role="img" aria-label="Stopwatch visualization"><canvas width="200" height="140"></canvas><span>Stopwatch</span></div><div class="mode-cell" data-mode="countdown" role="img" aria-label="Countdown visualization"><canvas width="200" height="140"></canvas><span>Countdown</span></div><div class="mode-cell" data-mode="timer" role="img" aria-label="Timer visualization"><canvas width="200" height="140"></canvas><span>Timer</span></div></div></div>
+<div class="cat-group" role="region" aria-label="System modes"><h3 class="cat-label">System <span class="cat-count">6</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="cpu" role="img" aria-label="Cpu visualization"><canvas width="200" height="140"></canvas><span>Cpu</span></div><div class="mode-cell" data-mode="memory" role="img" aria-label="Memory visualization"><canvas width="200" height="140"></canvas><span>Memory</span></div><div class="mode-cell" data-mode="disk" role="img" aria-label="Disk visualization"><canvas width="200" height="140"></canvas><span>Disk</span></div><div class="mode-cell" data-mode="network" role="img" aria-label="Network visualization"><canvas width="200" height="140"></canvas><span>Network</span></div><div class="mode-cell" data-mode="uptime" role="img" aria-label="Uptime visualization"><canvas width="200" height="140"></canvas><span>Uptime</span></div><div class="mode-cell" data-mode="latency" role="img" aria-label="Latency visualization"><canvas width="200" height="140"></canvas><span>Latency</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Health modes"><h3 class="cat-label">Health <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="heart" role="img" aria-label="Heart visualization"><canvas width="200" height="140"></canvas><span>Heart</span></div><div class="mode-cell" data-mode="lungs" role="img" aria-label="Lungs visualization"><canvas width="200" height="140"></canvas><span>Lungs</span></div><div class="mode-cell" data-mode="oxygen" role="img" aria-label="Oxygen visualization"><canvas width="200" height="140"></canvas><span>Oxygen</span></div><div class="mode-cell" data-mode="temperature" role="img" aria-label="Temperature visualization"><canvas width="200" height="140"></canvas><span>Temperature</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Weather modes"><h3 class="cat-label">Weather <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="wind" role="img" aria-label="Wind visualization"><canvas width="200" height="140"></canvas><span>Wind</span></div><div class="mode-cell" data-mode="humidity" role="img" aria-label="Humidity visualization"><canvas width="200" height="140"></canvas><span>Humidity</span></div><div class="mode-cell" data-mode="uv" role="img" aria-label="Uv visualization"><canvas width="200" height="140"></canvas><span>Uv</span></div><div class="mode-cell" data-mode="rain-gauge" role="img" aria-label="Rain Gauge visualization"><canvas width="200" height="140"></canvas><span>Rain Gauge</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Financial modes"><h3 class="cat-label">Financial <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="stock" role="img" aria-label="Stock visualization"><canvas width="200" height="140"></canvas><span>Stock</span></div><div class="mode-cell" data-mode="crypto" role="img" aria-label="Crypto visualization"><canvas width="200" height="140"></canvas><span>Crypto</span></div><div class="mode-cell" data-mode="percentage" role="img" aria-label="Percentage visualization"><canvas width="200" height="140"></canvas><span>Percentage</span></div><div class="mode-cell" data-mode="currency" role="img" aria-label="Currency visualization"><canvas width="200" height="140"></canvas><span>Currency</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Rating modes"><h3 class="cat-label">Rating <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="stars" role="img" aria-label="Stars visualization"><canvas width="200" height="140"></canvas><span>Stars</span></div><div class="mode-cell" data-mode="rating" role="img" aria-label="Rating visualization"><canvas width="200" height="140"></canvas><span>Rating</span></div><div class="mode-cell" data-mode="score" role="img" aria-label="Score visualization"><canvas width="200" height="140"></canvas><span>Score</span></div><div class="mode-cell" data-mode="rank" role="img" aria-label="Rank visualization"><canvas width="200" height="140"></canvas><span>Rank</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Loading modes"><h3 class="cat-label">Loading <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="loading" role="img" aria-label="Loading visualization"><canvas width="200" height="140"></canvas><span>Loading</span></div><div class="mode-cell" data-mode="spinner" role="img" aria-label="Spinner visualization"><canvas width="200" height="140"></canvas><span>Spinner</span></div><div class="mode-cell" data-mode="dots-loading" role="img" aria-label="Dots Loading visualization"><canvas width="200" height="140"></canvas><span>Dots Loading</span></div><div class="mode-cell" data-mode="pulse-loading" role="img" aria-label="Pulse Loading visualization"><canvas width="200" height="140"></canvas><span>Pulse Loading</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Status modes"><h3 class="cat-label">Status <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="badge" role="img" aria-label="Badge visualization"><canvas width="200" height="140"></canvas><span>Badge</span></div><div class="mode-cell" data-mode="chip" role="img" aria-label="Chip visualization"><canvas width="200" height="140"></canvas><span>Chip</span></div><div class="mode-cell" data-mode="tag" role="img" aria-label="Tag visualization"><canvas width="200" height="140"></canvas><span>Tag</span></div><div class="mode-cell" data-mode="indicator" role="img" aria-label="Indicator visualization"><canvas width="200" height="140"></canvas><span>Indicator</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Spatial modes"><h3 class="cat-label">Spatial <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="minimap" role="img" aria-label="Minimap visualization"><canvas width="200" height="140"></canvas><span>Minimap</span></div><div class="mode-cell" data-mode="horizon" role="img" aria-label="Horizon visualization"><canvas width="200" height="140"></canvas><span>Horizon</span></div><div class="mode-cell" data-mode="level" role="img" aria-label="Level visualization"><canvas width="200" height="140"></canvas><span>Level</span></div><div class="mode-cell" data-mode="gyroscope" role="img" aria-label="Gyroscope visualization"><canvas width="200" height="140"></canvas><span>Gyroscope</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Digital modes"><h3 class="cat-label">Digital <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="pixel" role="img" aria-label="Pixel visualization"><canvas width="200" height="140"></canvas><span>Pixel</span></div><div class="mode-cell" data-mode="led" role="img" aria-label="Led visualization"><canvas width="200" height="140"></canvas><span>Led</span></div><div class="mode-cell" data-mode="matrix" role="img" aria-label="Matrix visualization"><canvas width="200" height="140"></canvas><span>Matrix</span></div><div class="mode-cell" data-mode="seven-seg" role="img" aria-label="Seven Seg visualization"><canvas width="200" height="140"></canvas><span>Seven Seg</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Chart modes"><h3 class="cat-label">Chart <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="bar-stack" role="img" aria-label="Bar Stack visualization"><canvas width="200" height="140"></canvas><span>Bar Stack</span></div><div class="mode-cell" data-mode="bar-group" role="img" aria-label="Bar Group visualization"><canvas width="200" height="140"></canvas><span>Bar Group</span></div><div class="mode-cell" data-mode="histogram" role="img" aria-label="Histogram visualization"><canvas width="200" height="140"></canvas><span>Histogram</span></div><div class="mode-cell" data-mode="waterfall" role="img" aria-label="Waterfall visualization"><canvas width="200" height="140"></canvas><span>Waterfall</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Radial modes"><h3 class="cat-label">Radial <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="radial-bar" role="img" aria-label="Radial Bar visualization"><canvas width="200" height="140"></canvas><span>Radial Bar</span></div><div class="mode-cell" data-mode="sunburst" role="img" aria-label="Sunburst visualization"><canvas width="200" height="140"></canvas><span>Sunburst</span></div><div class="mode-cell" data-mode="polar" role="img" aria-label="Polar visualization"><canvas width="200" height="140"></canvas><span>Polar</span></div><div class="mode-cell" data-mode="rose-chart" role="img" aria-label="Rose Chart visualization"><canvas width="200" height="140"></canvas><span>Rose Chart</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Gauge Variants modes"><h3 class="cat-label">Gauge Variants <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="gauge-mini" role="img" aria-label="Gauge Mini visualization"><canvas width="200" height="140"></canvas><span>Gauge Mini</span></div><div class="mode-cell" data-mode="gauge-flat" role="img" aria-label="Gauge Flat visualization"><canvas width="200" height="140"></canvas><span>Gauge Flat</span></div><div class="mode-cell" data-mode="gauge-digital" role="img" aria-label="Gauge Digital visualization"><canvas width="200" height="140"></canvas><span>Gauge Digital</span></div><div class="mode-cell" data-mode="gauge-neon" role="img" aria-label="Gauge Neon visualization"><canvas width="200" height="140"></canvas><span>Gauge Neon</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Ring Variants modes"><h3 class="cat-label">Ring Variants <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="ring-thick" role="img" aria-label="Ring Thick visualization"><canvas width="200" height="140"></canvas><span>Ring Thick</span></div><div class="mode-cell" data-mode="ring-thin" role="img" aria-label="Ring Thin visualization"><canvas width="200" height="140"></canvas><span>Ring Thin</span></div><div class="mode-cell" data-mode="ring-dashed" role="img" aria-label="Ring Dashed visualization"><canvas width="200" height="140"></canvas><span>Ring Dashed</span></div><div class="mode-cell" data-mode="ring-gradient" role="img" aria-label="Ring Gradient visualization"><canvas width="200" height="140"></canvas><span>Ring Gradient</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Wave Variants modes"><h3 class="cat-label">Wave Variants <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="wave-square" role="img" aria-label="Wave Square visualization"><canvas width="200" height="140"></canvas><span>Wave Square</span></div><div class="mode-cell" data-mode="wave-triangle" role="img" aria-label="Wave Triangle visualization"><canvas width="200" height="140"></canvas><span>Wave Triangle</span></div><div class="mode-cell" data-mode="wave-noise" role="img" aria-label="Wave Noise visualization"><canvas width="200" height="140"></canvas><span>Wave Noise</span></div><div class="mode-cell" data-mode="wave-pulse" role="img" aria-label="Wave Pulse visualization"><canvas width="200" height="140"></canvas><span>Wave Pulse</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Meter Variants modes"><h3 class="cat-label">Meter Variants <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="meter-horizontal" role="img" aria-label="Meter Horizontal visualization"><canvas width="200" height="140"></canvas><span>Meter Horizontal</span></div><div class="mode-cell" data-mode="meter-arc" role="img" aria-label="Meter Arc visualization"><canvas width="200" height="140"></canvas><span>Meter Arc</span></div><div class="mode-cell" data-mode="meter-digital" role="img" aria-label="Meter Digital visualization"><canvas width="200" height="140"></canvas><span>Meter Digital</span></div><div class="mode-cell" data-mode="meter-segment" role="img" aria-label="Meter Segment visualization"><canvas width="200" height="140"></canvas><span>Meter Segment</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Spark Variants modes"><h3 class="cat-label">Spark Variants <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="spark-bar" role="img" aria-label="Spark Bar visualization"><canvas width="200" height="140"></canvas><span>Spark Bar</span></div><div class="mode-cell" data-mode="spark-area" role="img" aria-label="Spark Area visualization"><canvas width="200" height="140"></canvas><span>Spark Area</span></div><div class="mode-cell" data-mode="spark-dot" role="img" aria-label="Spark Dot visualization"><canvas width="200" height="140"></canvas><span>Spark Dot</span></div><div class="mode-cell" data-mode="spark-step" role="img" aria-label="Spark Step visualization"><canvas width="200" height="140"></canvas><span>Spark Step</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Alert modes"><h3 class="cat-label">Alert <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="status" role="img" aria-label="Status visualization"><canvas width="200" height="140"></canvas><span>Status</span></div><div class="mode-cell" data-mode="health" role="img" aria-label="Health visualization"><canvas width="200" height="140"></canvas><span>Health</span></div><div class="mode-cell" data-mode="alert" role="img" aria-label="Alert visualization"><canvas width="200" height="140"></canvas><span>Alert</span></div><div class="mode-cell" data-mode="warning" role="img" aria-label="Warning visualization"><canvas width="200" height="140"></canvas><span>Warning</span></div></div></div>
+<div class="cat-group" role="region" aria-label="Fill modes"><h3 class="cat-label">Fill <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="fill-circle" role="img" aria-label="Fill Circle visualization"><canvas width="200" height="140"></canvas><span>Fill Circle</span></div><div class="mode-cell" data-mode="fill-square" role="img" aria-label="Fill Square visualization"><canvas width="200" height="140"></canvas><span>Fill Square</span></div><div class="mode-cell" data-mode="fill-diamond" role="img" aria-label="Fill Diamond visualization"><canvas width="200" height="140"></canvas><span>Fill Diamond</span></div><div class="mode-cell" data-mode="fill-hex" role="img" aria-label="Fill Hex visualization"><canvas width="200" height="140"></canvas><span>Fill Hex</span></div></div></div>
+
+</section>
+
+<section id="code">
+  <h2>Vanilla JS too.</h2>
+<pre><span class="kw">import</span> { PulseEngine } <span class="kw">from</span> <span class="str">'pulsekit'</span>
+
+<span class="kw">const</span> engine = <span class="kw">new</span> PulseEngine({ value: 50, mode: <span class="str">'gauge'</span> })
+engine.mount(document.querySelector(<span class="str">'canvas'</span>))
+engine.start()
+
+setInterval(() =&gt; engine.setValue(Math.random() * 100), 1000)</pre>
+</section>
+
+<section>
+  <h2>How it works.</h2>
+  <p>One canvas, one requestAnimationFrame loop. When a new value arrives, nothing jumps. The display lerps toward the target at 8% per frame. History, momentum, and color all follow the same interpolation. That's why every mode feels like one thing breathing rather than parts updating independently.</p>
+</section>
+
+<section>
+  <p>Experimental software. DYOR. Built by <a href="https://github.com/dragoon0x">0xDragoon</a>.</p>
+</section>
+
+</div>
+</main>
+
+<footer><p>PulseKit v2.0.0 &middot; 132 modes &middot; 25 categories &middot; 60fps &middot; 0 deps &middot; MIT &middot; 0xDragoon</p></footer>
+
+<script>
+(function(){
+var TAU=Math.PI*2;
+function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y)}
+function drawStar(ctx,cx,cy,r,fill,pc){var spikes=5,step=Math.PI/spikes;ctx.beginPath();for(var i=0;i<spikes*2;i++){var radius=i%2===0?r:r*.45;var angle=i*step-Math.PI/2;i===0?ctx.moveTo(cx+Math.cos(angle)*radius,cy+Math.sin(angle)*radius):ctx.lineTo(cx+Math.cos(angle)*radius,cy+Math.sin(angle)*radius)}ctx.closePath();ctx.fillStyle=fill>=1?pc:fill>0?pc+'60':'#e2e2e2';ctx.fill()}
+
+// Monochrome palette — all greys
+var P={primary:'#555',primaryRgb:[85,85,85],glow:'rgba(85,85,85,0.25)',dim:'#ccc',bg:'#fff',fg:'#111',grid:'#e8e8e8',text:'#888',muted:'#bbb',warn:'#999',warnRgb:[153,153,153],danger:'#444',dangerRgb:[68,68,68],up:'#666',down:'#999'};
+
+var cells=[];
+var t=0;
+
+document.querySelectorAll('.mode-cell').forEach(function(el){
+  var cv=el.querySelector('canvas');
+  var dpr=Math.min(window.devicePixelRatio||1,2);
+  cv.width=200*dpr;cv.height=140*dpr;
+  var ctx=cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  var mode=el.getAttribute('data-mode');
+  cells.push({el:el,cv:cv,ctx:ctx,mode:mode,v:20+Math.random()*60,dv:0.5,h:[],visible:false});
+});
+
+// IntersectionObserver for performance — only render visible
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    var idx=cells.findIndex(function(c){return c.el===e.target});
+    if(idx>=0)cells[idx].visible=e.isIntersecting;
+  });
+},{rootMargin:'100px'});
+cells.forEach(function(c){obs.observe(c.el)});
+
+// ═══ Simplified renderers for landing page (monochrome) ═══
+// Each mode gets a lightweight canvas renderer
+var R={};
+
+// Helper: all modes that are simple arc/ring variations
+function arcMode(ctx,W,H,d,startFrac,endFrac,lw,capRound){
+  var cx=W/2,cy=H/2,r=Math.min(W,H)*.38;
+  var sa=-Math.PI/2+startFrac*TAU,ea=-Math.PI/2+endFrac*TAU;
+  ctx.beginPath();ctx.arc(cx,cy,r,sa===ea?0:sa,sa===ea?TAU:ea);ctx.strokeStyle=P.grid;ctx.lineWidth=lw||6;if(capRound)ctx.lineCap='round';ctx.stroke();
+  if(d>.001){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+TAU*d);ctx.strokeStyle=P.primary;ctx.lineWidth=lw||6;if(capRound)ctx.lineCap='round';ctx.stroke()}
+}
+
+// Register all 132 simplified renderers
+// Core 30
+R['ring']=function(c,W,H,d,t2){arcMode(c,W,H,d,0,1,8,true)};
+R['gauge']=function(c,W,H,d,t2){var cx=W/2,cy=H*.62,r=50;c.beginPath();c.arc(cx,cy,r,Math.PI,TAU);c.strokeStyle=P.grid;c.lineWidth=5;c.lineCap='round';c.stroke();c.beginPath();c.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*d);c.strokeStyle=P.primary;c.lineWidth=5;c.lineCap='round';c.stroke();var na=Math.PI+Math.PI*d;c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+Math.cos(na)*r*.78,cy+Math.sin(na)*r*.78);c.strokeStyle=P.fg;c.lineWidth=1.5;c.stroke()};
+R['bar']=function(c,W,H,d){var bh=14,y=H/2-bh/2;c.fillStyle=P.grid;c.beginPath();rr(c,16,y,W-32,bh,bh/2);c.fill();if(d>0){c.fillStyle=P.primary;c.beginPath();rr(c,16,y,Math.max(bh,(W-32)*d),bh,bh/2);c.fill()}};
+R['spark']=function(c,W,H,d,t2,hist){if(hist.length<2)return;var step=(W-12)/(hist.length-1);c.beginPath();for(var i=0;i<hist.length;i++){var x=6+i*step,y=H-6-hist[i]*(H-12);i===0?c.moveTo(x,y):c.lineTo(x,y)}c.strokeStyle=P.primary;c.lineWidth=1.5;c.lineCap='round';c.stroke()};
+R['ticker']=function(c,W,H,d,t2,h,v){c.font='700 36px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.fg;c.fillText(Math.round(v),W/2,H/2)};
+R['delta']=function(c,W,H,d){var up=d>.5;c.font='600 24px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.primary;c.fillText(up?'\u25B2':'\u25BC',W/2,H/2-8);c.font='500 12px system-ui';c.fillText((up?'+':'')+((d-.5)*100).toFixed(1),W/2,H/2+16)};
+R['dot']=function(c,W,H,d,t2){var r=12*(1+Math.sin(t2*2)*.12)*(.5+d*.5);c.beginPath();c.arc(W/2,H/2,Math.max(3,r),0,TAU);c.fillStyle=P.primary;c.fill()};
+R['wave']=function(c,W,H,d,t2){var amp=H*.25*d;c.beginPath();for(var x=0;x<=W;x+=2){var y=H/2+Math.sin(x/W*(2+d*6)*TAU+t2*3)*amp;x===0?c.moveTo(x,y):c.lineTo(x,y)}c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['heat']=function(c,W,H,d){c.fillStyle='rgba(85,85,85,'+(0.08+d*.6)+')';c.beginPath();rr(c,10,10,W-20,H-20,8);c.fill()};
+R['meter']=function(c,W,H,d){for(var i=0;i<10;i++){var y=H-8-(i+1)*((H-16)/10);c.fillStyle=i<Math.floor(d*10)?P.primary:P.grid;c.beginPath();rr(c,W*.3,y+1,W*.4,(H-16)/10-2,2);c.fill()}};
+R['needle']=function(c,W,H,d){var cx=W/2,cy=H/2,r=46,a=-Math.PI*.75+d*Math.PI*1.5;c.beginPath();c.arc(cx,cy,r,0,TAU);c.strokeStyle=P.grid;c.lineWidth=1;c.stroke();c.beginPath();c.moveTo(cx+Math.cos(a)*r*.75,cy+Math.sin(a)*r*.75);c.lineTo(cx,cy);c.strokeStyle=P.primary;c.lineWidth=2;c.stroke();c.beginPath();c.arc(cx,cy,3,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['heartbeat']=function(c,W,H,d,t2,hist){if(hist.length<2)return;c.beginPath();for(var i=0;i<hist.length;i++){var x=i/(hist.length-1)*W;var ph=(i/6+t2*2)%1;var y=H/2;if(ph<.1)y=H/2-H*.35*hist[i]*(ph/.1);else if(ph<.15)y=H/2+H*.1*hist[i];else if(ph<.25)y=H/2-H*.4*hist[i]*((0.25-ph)/.1);i===0?c.moveTo(x,y):c.lineTo(x,y)}c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['spectrum']=function(c,W,H,d,t2){var bars=10,bw=(W-12)/bars;for(var i=0;i<bars;i++){var bh=Math.abs(d*.4+Math.sin(t2*3+i*.7)*.3)*(H-10);c.fillStyle='rgba(85,85,85,'+(0.3+bh/H*.6)+')';c.beginPath();rr(c,6+i*bw+1,H-5-bh,bw-2,bh,2);c.fill()}};
+R['bubble']=function(c,W,H,d,t2){var r=42*d*(1+Math.sin(t2*1.5)*.04);c.beginPath();c.arc(W/2,H/2,Math.max(3,r),0,TAU);c.fillStyle='rgba(85,85,85,0.12)';c.fill();c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['radar']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,r=46;for(var j=1;j<=3;j++){c.beginPath();c.arc(cx,cy,r*j/3,0,TAU);c.strokeStyle=P.grid;c.lineWidth=1;c.stroke()}var sa=(t2*1.5)%TAU;try{var g=c.createConicGradient(sa,cx,cy);g.addColorStop(0,'rgba(85,85,85,0.15)');g.addColorStop(0.15,'rgba(85,85,85,0)');g.addColorStop(1,'rgba(85,85,85,0)');c.beginPath();c.arc(cx,cy,r,0,TAU);c.fillStyle=g;c.fill()}catch(e){}};
+R['signal']=function(c,W,H,d){var bars=5,bw=10,gap=6,tw=bars*bw+(bars-1)*gap,sx=(W-tw)/2;for(var i=0;i<bars;i++){var bh=H*.5*((i+1)/bars);c.fillStyle=i<Math.ceil(d*bars)?P.primary:P.grid;c.beginPath();rr(c,sx+i*(bw+gap),H*.72-bh,bw,bh,2);c.fill()}};
+R['battery']=function(c,W,H,d){var bw=W*.5,bh=H*.26,bx=(W-bw)/2,by=(H-bh)/2;c.strokeStyle=P.dim;c.lineWidth=1.5;c.beginPath();rr(c,bx,by,bw,bh,3);c.stroke();var fw=(bw-5)*d;if(fw>0){c.fillStyle=P.primary;c.beginPath();rr(c,bx+2.5,by+2.5,fw,bh-5,2);c.fill()}};
+R['equalizer']=function(c,W,H,d,t2){var bars=6,bw=(W-16)/bars;for(var i=0;i<bars;i++){var ph=Math.sin(t2*4+i*1.1)*.5+.5;var bh=(H-14)*d*(.3+ph*.7);c.fillStyle='rgba(85,85,85,'+(0.4+ph*.5)+')';c.beginPath();rr(c,8+i*bw+1,H-7-bh,bw-2,bh,bw/4);c.fill()}};
+R['pendulum']=function(c,W,H,d,t2){var cx=W/2,py=8,len=H*.5,spd=.5+d*3,ang=Math.sin(t2*spd)*.8*d,bx=cx+Math.sin(ang)*len,by=py+Math.cos(ang)*len;c.beginPath();c.moveTo(cx,py);c.lineTo(bx,by);c.strokeStyle=P.dim;c.lineWidth=1;c.stroke();c.beginPath();c.arc(bx,by,7,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['ripple']=function(c,W,H,d,t2){var cx=W/2,cy=H/2;for(var j=0;j<4;j++){var ph=((t2*(.5+d)+j*.25)%1),r=ph*50;c.beginPath();c.arc(cx,cy,r,0,TAU);c.strokeStyle='rgba(85,85,85,'+((1-ph)*.3*d)+')';c.lineWidth=1.5;c.stroke()}c.beginPath();c.arc(cx,cy,3,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['orbit']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,r=38,ang=t2*(.3+d*2);c.beginPath();c.arc(cx,cy,r,0,TAU);c.strokeStyle=P.grid;c.lineWidth=1;c.stroke();for(var j=0;j<6;j++){var ta=ang-j*.15;c.beginPath();c.arc(cx+Math.cos(ta)*r,cy+Math.sin(ta)*r,2.5-j*.3,0,TAU);c.fillStyle='rgba(85,85,85,'+(1-j*.15)+')';c.fill()}};
+R['flame']=function(c,W,H,d,t2){var cols=5,cw=(W-14)/cols;for(var j=0;j<cols;j++){var cd=Math.abs(j-2)/2,base=d*(1-cd*.4)+Math.sin(t2*8+j*2.3)*.1,bh=Math.max(2,base*(H-10));c.fillStyle='rgba(85,85,85,'+(0.15+bh/H*.5)+')';c.beginPath();rr(c,7+j*cw+1,H-5-bh,cw-2,bh,cw/4);c.fill()}};
+R['tide']=function(c,W,H,d,t2){var wy=H-H*d*.7;c.beginPath();c.moveTo(0,wy);for(var x=0;x<=W;x+=3)c.lineTo(x,wy+Math.sin(x*.03+t2*2)*4);c.lineTo(W,H);c.lineTo(0,H);c.closePath();c.fillStyle='rgba(85,85,85,0.1)';c.fill();c.beginPath();c.moveTo(0,wy);for(var x=0;x<=W;x+=3)c.lineTo(x,wy+Math.sin(x*.03+t2*2)*4);c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['compass']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,r=44;c.beginPath();c.arc(cx,cy,r,0,TAU);c.strokeStyle=P.grid;c.lineWidth=1.5;c.stroke();var ha=d*TAU-Math.PI/2;c.beginPath();c.moveTo(cx+Math.cos(ha)*r*.6,cy+Math.sin(ha)*r*.6);c.lineTo(cx,cy);c.strokeStyle=P.primary;c.lineWidth=2;c.stroke();c.beginPath();c.arc(cx,cy,3,0,TAU);c.fillStyle=P.fg;c.fill()};
+R['thermometer']=function(c,W,H,d){var tw=12,th=H*.5,cx=W/2,ty=12;c.strokeStyle=P.grid;c.lineWidth=1.5;c.beginPath();rr(c,cx-tw/2,ty,tw,th,tw/2);c.stroke();c.beginPath();c.arc(cx,ty+th+9,9,0,TAU);c.fillStyle=P.primary;c.fill();var fh=th*d;if(fh>0){c.fillStyle=P.primary;c.beginPath();rr(c,cx-tw/2+3,ty+th-fh,tw-6,fh,(tw-6)/2);c.fill()}};
+R['clock']=function(c,W,H,d){var cx=W/2,cy=H/2,r=44;c.beginPath();c.arc(cx,cy,r,0,TAU);c.strokeStyle=P.grid;c.lineWidth=1.5;c.stroke();for(var j=0;j<12;j++){var ma=(j/12)*TAU-Math.PI/2;c.beginPath();c.arc(cx+Math.cos(ma)*r*.85,cy+Math.sin(ma)*r*.85,1.5,0,TAU);c.fillStyle=P.dim;c.fill()}var ha=-Math.PI/2+d*TAU;c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+Math.cos(ha)*r*.6,cy+Math.sin(ha)*r*.6);c.strokeStyle=P.primary;c.lineWidth=2;c.lineCap='round';c.stroke();c.beginPath();c.arc(cx,cy,3,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['progress']=function(c,W,H,d){var bh=6,y=H/2-3;c.fillStyle=P.grid;c.beginPath();rr(c,14,y,W-28,bh,3);c.fill();if(d>0){c.fillStyle=P.primary;c.beginPath();rr(c,14,y,(W-28)*d,bh,3);c.fill()}};
+R['arc']=function(c,W,H,d){var cx=W/2,cy=H/2,r=44,sa=Math.PI/2+.3,ea=Math.PI*2.5-.3;c.beginPath();c.arc(cx,cy,r,sa,ea);c.strokeStyle=P.grid;c.lineWidth=12;c.lineCap='round';c.stroke();if(d>.001){c.beginPath();c.arc(cx,cy,r,sa,sa+(ea-sa)*d);c.strokeStyle=P.primary;c.lineWidth=12;c.lineCap='round';c.stroke()}};
+R['segments']=function(c,W,H,d){var cx=W/2,cy=H/2,r=44,n=20,sg=.03,sa=(TAU-n*sg)/n,lit=Math.floor(d*n);for(var j=0;j<n;j++){var a=-Math.PI/2+j*(sa+sg);c.beginPath();c.arc(cx,cy,r,a,a+sa);c.strokeStyle=j<lit?P.primary:P.grid;c.lineWidth=6;c.stroke()}};
+R['binary']=function(c,W,H,d){var cols=6,rows=3,cw=(W-14)/cols,ch=(H-14)/rows,lit=Math.floor(d*18);for(var r=0;r<rows;r++)for(var co=0;co<cols;co++){c.fillStyle=(r*cols+co)<lit?P.primary:P.grid;c.beginPath();rr(c,7+co*cw+1,7+r*ch+1,cw-2,ch-2,3);c.fill()}};
+
+// For all remaining 102 modes — use simple fallback renderers by type
+function genericArc(c,W,H,d,lw,cap){arcMode(c,W,H,d,0,1,lw||6,cap!==false)}
+function genericBar(c,W,H,d){R['bar'](c,W,H,d)}
+function genericText(c,W,H,d,t2,hist,v,label){c.font='700 30px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.fg;c.fillText(label||Math.round(v),W/2,H/2)}
+function genericSpark(c,W,H,d,t2,hist){R['spark'](c,W,H,d,t2,hist)}
+function genericWave(c,W,H,d,t2,hist,v,fn){R['wave'](c,W,H,d,t2)}
+function genericDot(c,W,H,d,t2){R['dot'](c,W,H,d,t2)}
+
+// Map remaining modes to appropriate renderers
+var arcModes=['donut','knob','dial','pressure','speedometer','gauge-mini','gauge-neon','ring-thick','ring-thin','ring-dashed','ring-gradient','meter-arc','meter-segment','radial-bar','fill-circle'];
+var barModes=['slider','step','progress','gauge-flat','meter-horizontal'];
+var waveModes=['oscilloscope','seismograph','ecg','pulse-wave','sawtooth','square-wave','wave-square','wave-triangle','wave-noise','wave-pulse'];
+var sparkModes=['crypto','latency','spark-bar','spark-area','spark-dot','spark-step'];
+var dotModes=['loading','spinner','dots-loading','pulse-loading','status','indicator'];
+var textModes=['decibel','uptime','oxygen','temperature','percentage','currency','timer','countdown','rank','score','rating','badge','chip','tag','seven-seg','gauge-digital','meter-digital','stock'];
+
+arcModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d){genericArc(c,W,H,d)}});
+barModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d){genericBar(c,W,H,d)}});
+waveModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2){genericWave(c,W,H,d,t2)}});
+sparkModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2,hist){genericSpark(c,W,H,d,t2,hist)}});
+dotModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2){genericDot(c,W,H,d,t2)}});
+textModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2,hist,v){genericText(c,W,H,d,t2,hist,v)}});
+
+// Unique renderers for specific modes
+R['pie']=function(c,W,H,d){var cx=W/2,cy=H/2,r=42;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+TAU*d);c.closePath();c.fillStyle=P.primary;c.fill();c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,-Math.PI/2+TAU*d,-Math.PI/2+TAU);c.closePath();c.fillStyle=P.grid;c.fill()};
+R['spiral']=function(c,W,H,d,t2){var cx=W/2,cy=H/2;c.beginPath();for(var a=0;a<d*TAU*3;a+=.06){var r=(a/(TAU*3))*42;c.lineTo(cx+Math.cos(a+t2)*r,cy+Math.sin(a+t2)*r)}c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['helix']=function(c,W,H,d,t2){var amp=H*.25*d;for(var s2=0;s2<2;s2++){c.beginPath();for(var x=0;x<=W;x+=2){var y=H/2+Math.sin(x/W*8+t2*2+s2*Math.PI)*amp*(s2?1:-1)*.5+Math.cos(x/W*8+t2*2+s2*Math.PI)*amp*.5;x===0?c.moveTo(x,y):c.lineTo(x,y)}c.strokeStyle=s2?P.primary:P.dim;c.lineWidth=1.5;c.stroke()}};
+R['dna']=function(c,W,H,d,t2){R['helix'](c,W,H,d,t2)};
+R['spring']=function(c,W,H,d,t2){var coils=3+Math.floor(d*8),amp=W*.12;c.beginPath();for(var y=8;y<H-8;y++){var x=W/2+Math.sin(y/H*coils*TAU+t2*2)*amp;y===8?c.moveTo(x,y):c.lineTo(x,y)}c.strokeStyle=P.primary;c.lineWidth=2;c.lineCap='round';c.stroke()};
+R['volume']=function(c,W,H,d){var cx=W/2,cy=H/2,r=16;c.beginPath();c.moveTo(cx-r*.5,cy-r*.3);c.lineTo(cx-r*.1,cy-r*.3);c.lineTo(cx+r*.2,cy-r*.7);c.lineTo(cx+r*.2,cy+r*.7);c.lineTo(cx-r*.1,cy+r*.3);c.lineTo(cx-r*.5,cy+r*.3);c.closePath();c.fillStyle=P.primary;c.fill();var waves=Math.ceil(d*3);for(var i=1;i<=waves;i++){c.beginPath();c.arc(cx+r*.3,cy,r*(.3+i*.22),-.5,.5);c.strokeStyle=P.primary;c.globalAlpha=.5;c.lineWidth=1.5;c.stroke()}c.globalAlpha=1};
+R['loudness']=function(c,W,H,d,t2){var bars=18,bw=W/bars;for(var i=0;i<bars;i++){var dist=Math.abs(i-bars/2)/(bars/2);var h=(1-dist*.5)*d*(H*.6)+Math.sin(t2*6+i)*3*d;c.fillStyle=P.primary;c.beginPath();rr(c,i*bw+1,(H-h)/2,bw-2,Math.max(2,h),1);c.fill()}};
+R['waveform']=function(c,W,H,d,t2){var bars=28,bw=W/bars;for(var i=0;i<bars;i++){var v2=Math.abs(Math.sin(i*.4+t2*3))*d;var h=v2*H*.6;c.fillStyle=P.primary;c.fillRect(i*bw+1,(H-h)/2,bw-2,Math.max(1,h))}};
+R['tachometer']=R['gauge'];
+R['altimeter']=R['clock'];
+R['hourglass']=function(c,W,H,d){var cx=W/2,w=W*.2;c.strokeStyle=P.dim;c.lineWidth=1.5;c.beginPath();c.moveTo(cx-w,12);c.lineTo(cx+w,12);c.lineTo(cx+2,H/2);c.lineTo(cx+w,H-12);c.lineTo(cx-w,H-12);c.lineTo(cx-2,H/2);c.closePath();c.stroke();c.fillStyle=P.primary;var top=(1-d)*((H/2)-16);c.beginPath();rr(c,cx-w+4,14,w*2-8,top,2);c.fill();var bot=d*((H/2)-16);c.beginPath();rr(c,cx-w+4,H-14-bot,w*2-8,bot,2);c.fill()};
+R['stopwatch']=R['clock'];
+R['cpu']=function(c,W,H,d){var sz=Math.min(W,H)*.45,x=(W-sz)/2,y=(H-sz)/2;c.strokeStyle=P.grid;c.lineWidth=1.5;c.beginPath();rr(c,x,y,sz,sz,sz*.08);c.stroke();c.fillStyle='rgba(85,85,85,'+(0.08+d*.35)+')';c.beginPath();rr(c,x+3,y+3,sz-6,sz-6,sz*.06);c.fill()};
+R['memory']=function(c,W,H,d){var cols=8,rows=3,gap=3,pad=10;var cw=(W-pad*2)/cols,ch=(H-pad*2)/rows;var used=Math.floor(d*cols*rows);for(var r=0;r<rows;r++)for(var co=0;co<cols;co++){c.fillStyle=(r*cols+co)<used?P.primary:P.grid;c.beginPath();rr(c,pad+co*cw+1,pad+r*ch+1,cw-2,ch-2,2);c.fill()}};
+R['disk']=function(c,W,H,d){var cx=W/2,cy=H/2,r=40;c.beginPath();c.arc(cx,cy,r,0,TAU);c.fillStyle=P.grid;c.fill();c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+TAU*d);c.closePath();c.fillStyle=P.primary;c.fill();c.beginPath();c.arc(cx,cy,r*.2,0,TAU);c.fillStyle=P.bg;c.fill()};
+R['network']=function(c,W,H,d,t2){var bars=6,bw=W/bars*.7,pad=W*.15;for(var i=0;i<bars;i++){var h=H*.55*d*(0.3+Math.sin(t2*3+i*1.5)*.7);c.fillStyle=i%2===0?P.primary:'rgba(85,85,85,0.4)';c.beginPath();rr(c,pad+i*((W-pad*2)/bars)+1,H*.78-h,bw-2,h,2);c.fill()}};
+R['heart']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,sc=Math.min(W,H)*.011*(0.8+d*.4)*(1+Math.sin(t2*4)*.06);c.save();c.translate(cx,cy);c.scale(sc,sc);c.beginPath();c.moveTo(0,5);c.bezierCurveTo(-20,-15,-35,-5,-20,10);c.bezierCurveTo(-10,20,0,25,0,30);c.bezierCurveTo(0,25,10,20,20,10);c.bezierCurveTo(35,-5,20,-15,0,5);c.fillStyle=P.primary;c.fill();c.restore()};
+R['lungs']=function(c,W,H,d,t2){var breath=Math.sin(t2*1.5)*.5+.5;var w=W*.12+W*.08*breath*d,h=H*.3+H*.08*breath*d;c.beginPath();c.ellipse(W/2-w*.7,H/2,w,h,0,0,TAU);c.fillStyle='rgba(85,85,85,0.12)';c.fill();c.strokeStyle=P.primary;c.lineWidth=1;c.stroke();c.beginPath();c.ellipse(W/2+w*.7,H/2,w,h,0,0,TAU);c.fillStyle='rgba(85,85,85,0.12)';c.fill();c.stroke()};
+R['wind']=function(c,W,H,d,t2){for(var i=0;i<4;i++){var y=H*.2+i*H*.18,len=W*(.2+d*.4)*(0.6+Math.sin(i*1.5)*.4);var x=W*.15+Math.sin(t2*2+i)*(W*.08);c.beginPath();c.moveTo(x,y);c.quadraticCurveTo(x+len*.5,y-6+Math.sin(t2+i)*3,x+len,y);c.strokeStyle=P.primary;c.lineWidth=1.5;c.lineCap='round';c.stroke()}};
+R['humidity']=function(c,W,H,d){var cx=W/2,cy=H/2,r=14;c.beginPath();c.moveTo(cx,cy-r*2);c.quadraticCurveTo(cx+r*1.5,cy-r*.5,cx+r,cy+r*.3);c.arc(cx,cy+r*.3,r,0,Math.PI);c.quadraticCurveTo(cx-r*1.5,cy-r*.5,cx,cy-r*2);c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke();c.fillStyle='rgba(85,85,85,'+(0.05+d*.3)+')';c.fill()};
+R['uv']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,r=14;c.beginPath();c.arc(cx,cy,r,0,TAU);c.fillStyle=P.primary;c.fill();for(var i=0;i<10;i++){var a=(i/10)*TAU;var len=r*(.3+d*.5)*(0.8+Math.sin(t2*3+i)*.2);c.beginPath();c.moveTo(cx+Math.cos(a)*r*1.2,cy+Math.sin(a)*r*1.2);c.lineTo(cx+Math.cos(a)*(r*1.2+len),cy+Math.sin(a)*(r*1.2+len));c.strokeStyle=P.primary;c.lineWidth=1.5;c.lineCap='round';c.stroke()}c.font='600 '+r*.7+'px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.bg;c.fillText(Math.round(d*11),cx,cy)};
+R['rain-gauge']=function(c,W,H,d){var w=W*.25,h=H*.65,x=(W-w)/2,y=(H-h)/2;c.strokeStyle=P.grid;c.lineWidth=1.5;c.beginPath();rr(c,x,y,w,h,3);c.stroke();c.fillStyle='rgba(85,85,85,0.2)';c.beginPath();rr(c,x+2,y+h-h*d-2,w-4,h*d,2);c.fill()};
+R['stars']=function(c,W,H,d){var total=5,filled=d*total,sr=Math.min(W/(total*2.5),H*.22);for(var i=0;i<total;i++){drawStar(c,W/2+(i-2)*sr*2.5,H/2,sr,i<Math.floor(filled)?1:i<filled?filled%1:0,P.primary)}};
+R['minimap']=function(c,W,H,d,t2){c.strokeStyle=P.grid;c.lineWidth=1;c.strokeRect(6,6,W-12,H-12);var dx=6+(W-12)*d,dy=H/2+Math.sin(t2)*H*.18;c.beginPath();c.arc(dx,dy,3,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['horizon']=function(c,W,H,d){var cy=H/2+(d-.5)*30;c.fillStyle='rgba(85,85,85,0.06)';c.fillRect(0,cy,W,H-cy);c.beginPath();c.moveTo(0,cy);c.lineTo(W,cy);c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['level']=function(c,W,H,d){var cx=W/2,cy=H/2,r=36;c.beginPath();c.arc(cx,cy,r,0,TAU);c.strokeStyle=P.grid;c.lineWidth=1.5;c.stroke();var angle=(d-.5)*Math.PI*.3;var bx=cx+Math.sin(angle)*r*.4,by=cy+Math.cos(angle)*r*.4;c.beginPath();c.arc(bx,by,r*.12,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['gyroscope']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,r=36;for(var i=0;i<3;i++){c.beginPath();try{c.ellipse(cx,cy,r,r*Math.abs(Math.cos(t2+i*1.2))*.7+r*.2,(t2*.5+i*Math.PI/3),0,TAU)}catch(e){c.arc(cx,cy,r,0,TAU)}c.strokeStyle=i===0?P.primary:P.dim;c.lineWidth=1;c.stroke()}c.beginPath();c.arc(cx,cy,3,0,TAU);c.fillStyle=P.primary;c.fill()};
+R['pixel']=function(c,W,H,d){var sz=7,cols=Math.floor(W/sz),rows=Math.floor(H/sz),lit=Math.floor(d*cols*rows);for(var i=0;i<cols*rows;i++){c.fillStyle=i<lit?P.primary:P.grid;c.fillRect((i%cols)*sz+1,Math.floor(i/cols)*sz+1,sz-2,sz-2)}};
+R['led']=function(c,W,H,d){var cols=5,rows=3,gap=5;var cw=(W-gap*(cols+1))/cols,ch=(H-gap*(rows+1))/rows;var lit=Math.ceil(d*15);for(var r=0;r<rows;r++)for(var co=0;co<cols;co++){c.beginPath();c.arc(gap+co*(cw+gap)+cw/2,gap+r*(ch+gap)+ch/2,Math.min(cw,ch)/2,0,TAU);c.fillStyle=(r*cols+co)<lit?P.primary:P.grid;c.fill()}};
+R['matrix']=function(c,W,H,d,t2){var cols=8,rows=5;c.font='9px monospace';for(var r=0;r<rows;r++)for(var co=0;co<cols;co++){var ch=(r*cols+co)%2===0?'0':'1';var on=(r*cols+co)/(cols*rows)<d;c.fillStyle=on?P.primary:P.grid;c.fillText(ch,co*W/cols+3,r*H/rows+12)}};
+R['bar-stack']=function(c,W,H,d,t2){var bars=5,bw=W/bars;for(var i=0;i<bars;i++){var h1=d*(H*.35)*(0.3+Math.sin(i)*.7),h2=d*(H*.25)*(0.5+Math.cos(i*2)*.5);c.fillStyle=P.primary;c.beginPath();rr(c,i*bw+2,H-6-h1-h2,bw-4,h1,2);c.fill();c.fillStyle='rgba(85,85,85,0.3)';c.beginPath();rr(c,i*bw+2,H-6-h2,bw-4,h2,2);c.fill()}};
+R['bar-group']=R['bar-stack'];
+R['histogram']=function(c,W,H,d){var bins=10,bw=W/bins;for(var i=0;i<bins;i++){var dist=Math.abs(i-5)/5;var h=(1-dist*.7)*d*(H*.6);c.fillStyle=P.primary;c.fillRect(i*bw+1,H-5-h,bw-2,h)}};
+R['waterfall']=R['bar-stack'];
+R['sunburst']=function(c,W,H,d){var cx=W/2,cy=H/2,sl=8;for(var i=0;i<sl;i++){var a1=(i/sl)*TAU-Math.PI/2,a2=((i+1)/sl)*TAU-Math.PI/2;var r=Math.min(W,H)*(.12+d*.22*(0.5+Math.sin(i*1.5)*.5));c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,a1,a2);c.closePath();c.fillStyle=i%2===0?P.primary:'rgba(85,85,85,0.3)';c.fill()}};
+R['polar']=function(c,W,H,d,t2){var cx=W/2,cy=H/2,pts=8,r=Math.min(W,H)*.36;c.beginPath();for(var i=0;i<=pts;i++){var a=(i/pts)*TAU-Math.PI/2;var pr=r*d*(0.4+Math.sin(i*1.5+t2)*.6);c.lineTo(cx+Math.cos(a)*pr,cy+Math.sin(a)*pr)}c.closePath();c.fillStyle='rgba(85,85,85,0.08)';c.fill();c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
+R['rose-chart']=R['sunburst'];
+R['fill-circle']=function(c,W,H,d){var cx=W/2,cy=H/2,r=38;c.beginPath();c.arc(cx,cy,r,0,TAU);c.fillStyle=P.grid;c.fill();c.save();c.beginPath();c.rect(0,H-H*d,W,H);c.clip();c.beginPath();c.arc(cx,cy,r,0,TAU);c.fillStyle=P.primary;c.fill();c.restore()};
+R['fill-square']=function(c,W,H,d){var sz=Math.min(W,H)*.6,x=(W-sz)/2,y=(H-sz)/2;c.fillStyle=P.grid;c.beginPath();rr(c,x,y,sz,sz,4);c.fill();c.fillStyle=P.primary;c.beginPath();rr(c,x,y+sz-sz*d,sz,sz*d,4);c.fill()};
+R['fill-diamond']=function(c,W,H,d){var cx=W/2,cy=H/2,r=36;c.beginPath();c.moveTo(cx,cy-r);c.lineTo(cx+r,cy);c.lineTo(cx,cy+r);c.lineTo(cx-r,cy);c.closePath();c.fillStyle=P.grid;c.fill();c.save();c.beginPath();c.rect(0,H-H*d,W,H);c.clip();c.beginPath();c.moveTo(cx,cy-r);c.lineTo(cx+r,cy);c.lineTo(cx,cy+r);c.lineTo(cx-r,cy);c.closePath();c.fillStyle=P.primary;c.fill();c.restore()};
+R['fill-hex']=function(c,W,H,d){var cx=W/2,cy=H/2,r=36;function hex(){c.beginPath();for(var i=0;i<6;i++){var a=(i/6)*TAU-Math.PI/2;i===0?c.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):c.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r)}c.closePath()}hex();c.fillStyle=P.grid;c.fill();c.save();c.beginPath();c.rect(0,H-H*d,W,H);c.clip();hex();c.fillStyle=P.primary;c.fill();c.restore()};
+R['health']=function(c,W,H,d){var text=d>.8?'OK':d>.5?'WARN':d>.2?'LOW':'CRIT';c.font='600 '+Math.min(W,H)*.11+'px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.primary;c.fillText(text,W/2,H/2)};
+R['alert']=function(c,W,H,d,t2){if(d>.7){var cx=W/2,cy=H/2,r=22;var flash=Math.sin(t2*6)>.3;c.beginPath();c.moveTo(cx,cy-r);c.lineTo(cx+r*.85,cy+r*.6);c.lineTo(cx-r*.85,cy+r*.6);c.closePath();c.fillStyle=flash?P.primary:'rgba(85,85,85,0.3)';c.fill();c.font='700 '+r*.7+'px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.bg;c.fillText('!',cx,cy+r*.1)}else{c.beginPath();c.arc(W/2,H/2,16,0,TAU);c.fillStyle='rgba(85,85,85,0.2)';c.fill();c.font='700 14px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.fg;c.fillText('\u2713',W/2,H/2)}};
+R['warning']=R['alert'];
+
+// ═══ Main render loop ═══
+function render(){
+  t+=0.016;
+  for(var i=0;i<cells.length;i++){
+    var c=cells[i];
+    if(!c.visible)continue;
+    var ctx=c.ctx,W=200,H=140;
+    c.v+=(Math.sin(t*.7+i*1.3)+Math.cos(t*.5+i*2.1))*.5*2;
+    c.v=Math.max(5,Math.min(95,c.v));
+    var n=c.v/100;
+    c.dv+=(n-c.dv)*.08;
+    if(c.h.length>=40)c.h.shift();c.h.push(c.dv);
+    ctx.clearRect(0,0,W,H);
+    var fn=R[c.mode];
+    if(fn)fn(ctx,W,H,c.dv,t,c.h,c.v);
+    else{arcMode(ctx,W,H,c.dv,0,1,6,true)}
+  }
+  requestAnimationFrame(render);
+}
+render();
+})();
+</script>
+</body>
+</html>
