@@ -1,7 +1,7 @@
 {
-  "name": "pulsekit",
+  "name": "usepulsekit",
   "version": "2.0.0",
-  "description": "Living data components. 30 visualization modes. Ring gauges, VU meters, heartbeat monitors, spectrum analyzers, breathing bubbles, animated tickers. One canvas, 60fps interpolation, two props. Where Liveline gives you the line chart, PulseKit gives you everything else.",
+  "description": "Living data components. 132 modes across 25 categories. Ring gauges, VU meters, heartbeat monitors, spectrum analyzers, radar sweeps, thermometers, compass dials. One canvas, 60fps interpolation, two props. Zero dependencies.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -12,7 +12,11 @@
       "require": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react --external react-dom",
     "dev": "tsup src/index.ts --format esm,cjs --dts --watch --external react --external react-dom",
@@ -25,25 +29,33 @@
     "react-dom": ">=18.0.0"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true },
-    "react-dom": { "optional": true }
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsup": "^8.0.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.3.0"
   },
   "keywords": [
-    "pulse", "data-visualization", "live-data", "gauge", "meter", "ring",
-    "sparkline", "ticker", "heartbeat", "spectrum", "radar", "canvas",
-    "real-time", "animated", "dashboard", "react", "60fps", "lerp"
+    "pulse", "data-visualization", "live-data", "gauge", "meter",
+    "ring", "sparkline", "ticker", "heartbeat", "spectrum", "radar",
+    "canvas", "real-time", "animated", "dashboard", "react", "60fps",
+    "lerp", "thermometer", "compass", "vu-meter", "breathing"
   ],
   "author": "0xDragoon",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/dragoon0x/pulsekit" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dragoon0x/pulsekit"
+  },
   "homepage": "https://dragoon0x.github.io/pulsekit/",
   "sideEffects": false
 }
