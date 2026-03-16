@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PulseKit — 132 living data components</title>
+<title>usepulsekit — 132 living data components</title>
 <meta name="description" content="132 visualization modes. Ring gauges, VU meters, heartbeat monitors, spectrum analyzers. One canvas, 60fps, two props, zero deps.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,22 +15,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 ::selection{background:rgba(0,0,0,.08)}
 a{color:var(--black);text-decoration:none}a:hover{text-decoration:underline}
 a:focus-visible,button:focus-visible{outline:var(--focus-ring);outline-offset:3px;border-radius:2px}
-
-/* Skip link */
 .skip{position:absolute;top:-40px;left:0;background:var(--black);color:#fff;padding:8px 16px;z-index:200;font-size:14px;transition:top .2s}
 .skip:focus{top:0}
-
-/* Nav */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .nav-logo{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.16em;color:var(--black)}
 .nav-r{display:flex;gap:20px;align-items:center}
 .nav-r a{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
 .nav-r a:hover{color:var(--black);text-decoration:none}
 .ver{font-family:var(--mono);font-size:8px;padding:3px 8px;border:1px solid var(--border);border-radius:3px;color:var(--dim)}
-
 .container{max-width:960px;margin:0 auto;padding:0 28px}
-
-/* Hero */
 .hero{padding:150px 0 60px;text-align:center}
 .hero-over{font-family:var(--mono);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);margin-bottom:24px;opacity:0;animation:fi .5s ease forwards .1s}
 .hero h1{font-family:var(--serif);font-size:clamp(34px,5.5vw,52px);font-weight:400;color:var(--black);line-height:1.12;margin-bottom:16px;opacity:0;animation:fu .6s ease forwards .25s}
@@ -42,44 +35,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;ali
 .btn-dark{background:var(--black);color:#fff;border-color:var(--black)}
 .btn-dark:hover{background:#333}
 .btn .cp{font-size:8px;color:var(--dim);border:1px solid var(--border);padding:1px 5px;border-radius:3px}
-
 @keyframes fi{from{opacity:0}to{opacity:1}}
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* Stats */
 .stat-row{display:flex;gap:1px;margin:24px 0;background:var(--border);border-radius:8px;overflow:hidden}
 .stat{flex:1;padding:16px;background:var(--bg);text-align:center}
 .stat-val{font-family:var(--mono);font-size:24px;font-weight:500;color:var(--black)}
 .stat-label{font-family:var(--mono);font-size:7px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
-
-/* Sections */
 section{padding:56px 0;border-top:1px solid var(--border)}
 section h2{font-family:var(--serif);font-size:clamp(24px,3vw,30px);font-weight:400;color:var(--black);margin-bottom:6px}
 section>p{font-size:14px;margin-bottom:16px;max-width:500px;line-height:1.7}
-
-/* Category groups */
 .cat-group{margin-bottom:28px}
 .cat-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .cat-count{font-size:9px;color:var(--dim);background:var(--bg2);border:1px solid var(--border);padding:1px 6px;border-radius:10px}
-
-/* Mode grid */
 .mode-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
 .mode-cell{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;transition:border-color .15s,box-shadow .15s}
 .mode-cell:hover{border-color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .mode-cell canvas{display:block;margin:0 auto 4px;border-radius:4px;width:100%;height:60px}
 .mode-cell span{font-family:var(--mono);font-size:8px;color:var(--dim);letter-spacing:.03em;display:block}
-
-/* Code */
 pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 18px;overflow-x:auto;margin:14px 0;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--dark)}
 pre .kw{color:var(--black);font-weight:500}
 pre .str{color:var(--mid)}
 pre .cmt{color:var(--dim)}
-
-/* Footer */
 footer{border-top:1px solid var(--border);padding:36px 0;text-align:center}
 footer p{font-family:var(--mono);font-size:9px;color:var(--dim)}
-
-/* Responsive */
 @media(max-width:640px){
   .container{padding:0 16px}
   .mode-grid{grid-template-columns:repeat(3,1fr)}
@@ -87,12 +65,10 @@ footer p{font-family:var(--mono);font-size:9px;color:var(--dim)}
   .stat{min-width:33%}
   .nav-r a:not(:last-child){display:none}
 }
-/* Reduced motion */
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}
 }
-/* High contrast */
 @media(forced-colors:active){
   .mode-cell{border:2px solid CanvasText}
   .btn{border:2px solid ButtonText}
@@ -110,20 +86,17 @@ footer p{font-family:var(--mono);font-size:9px;color:var(--dim)}
     <span class="ver" aria-label="Version 2.0.0">v2.0.0</span>
   </div>
 </nav>
-
 <main id="main">
 <div class="container">
-
 <section class="hero" style="border:none">
   <div class="hero-over" aria-hidden="true">132 modes &middot; one canvas &middot; 60fps</div>
   <h1>Living data<br><em>components.</em></h1>
   <p class="hero-sub">Ring gauges, VU meters, heartbeat monitors, spectrum analyzers, radar sweeps, thermometers, compass dials. One canvas per component, 60fps interpolation, two props.</p>
   <div class="hero-actions">
-    <button class="btn btn-dark" onclick="navigator.clipboard.writeText('npm install pulsekit').then(function(){document.getElementById('cp1').textContent='copied';setTimeout(function(){document.getElementById('cp1').textContent='copy'},1500)})">npm install pulsekit <span class="cp" id="cp1" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.5)">copy</span></button>
+    <button class="btn btn-dark" onclick="navigator.clipboard.writeText('npm install usepulsekit').then(function(){document.getElementById('cp1').textContent='copied';setTimeout(function(){document.getElementById('cp1').textContent='copy'},1500)})">npm install usepulsekit <span class="cp" id="cp1" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.5)">copy</span></button>
     <a href="https://github.com/dragoon0x/pulsekit" class="btn">GitHub &rarr;</a>
   </div>
 </section>
-
 <section style="border:none;padding-top:0">
   <div class="stat-row" role="list" aria-label="Key statistics">
     <div class="stat" role="listitem"><div class="stat-val">132</div><div class="stat-label">Modes</div></div>
@@ -133,15 +106,12 @@ footer p{font-family:var(--mono);font-size:9px;color:var(--dim)}
     <div class="stat" role="listitem"><div class="stat-val">0</div><div class="stat-label">Deps</div></div>
   </div>
 </section>
-
 <section>
   <h2>Two props. That's it.</h2>
-<pre><span class="kw">import</span> { Pulse } <span class="kw">from</span> <span class="str">'pulsekit'</span>
-
+<pre><span class="kw">import</span> { Pulse } <span class="kw">from</span> <span class="str">'usepulsekit'</span>
 &lt;Pulse value={cpu} mode=<span class="str">"ring"</span> /&gt;   <span class="cmt">// value + mode. done.</span></pre>
   <p>Feed it data however you like. WebSocket, polling, random walk. PulseKit lerps between updates so even infrequent data looks smooth.</p>
 </section>
-
 <section id="modes">
   <h2>132 modes, all alive.</h2>
   <p>Every canvas below runs live with simulated data. Nothing is static. Scroll to explore all 25 categories.</p>
@@ -170,46 +140,33 @@ footer p{font-family:var(--mono);font-size:9px;color:var(--dim)}
 <div class="cat-group" role="region" aria-label="Spark Variants modes"><h3 class="cat-label">Spark Variants <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="spark-bar" role="img" aria-label="Spark Bar visualization"><canvas width="200" height="140"></canvas><span>Spark Bar</span></div><div class="mode-cell" data-mode="spark-area" role="img" aria-label="Spark Area visualization"><canvas width="200" height="140"></canvas><span>Spark Area</span></div><div class="mode-cell" data-mode="spark-dot" role="img" aria-label="Spark Dot visualization"><canvas width="200" height="140"></canvas><span>Spark Dot</span></div><div class="mode-cell" data-mode="spark-step" role="img" aria-label="Spark Step visualization"><canvas width="200" height="140"></canvas><span>Spark Step</span></div></div></div>
 <div class="cat-group" role="region" aria-label="Alert modes"><h3 class="cat-label">Alert <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="status" role="img" aria-label="Status visualization"><canvas width="200" height="140"></canvas><span>Status</span></div><div class="mode-cell" data-mode="health" role="img" aria-label="Health visualization"><canvas width="200" height="140"></canvas><span>Health</span></div><div class="mode-cell" data-mode="alert" role="img" aria-label="Alert visualization"><canvas width="200" height="140"></canvas><span>Alert</span></div><div class="mode-cell" data-mode="warning" role="img" aria-label="Warning visualization"><canvas width="200" height="140"></canvas><span>Warning</span></div></div></div>
 <div class="cat-group" role="region" aria-label="Fill modes"><h3 class="cat-label">Fill <span class="cat-count">4</span></h3><div class="mode-grid"><div class="mode-cell" data-mode="fill-circle" role="img" aria-label="Fill Circle visualization"><canvas width="200" height="140"></canvas><span>Fill Circle</span></div><div class="mode-cell" data-mode="fill-square" role="img" aria-label="Fill Square visualization"><canvas width="200" height="140"></canvas><span>Fill Square</span></div><div class="mode-cell" data-mode="fill-diamond" role="img" aria-label="Fill Diamond visualization"><canvas width="200" height="140"></canvas><span>Fill Diamond</span></div><div class="mode-cell" data-mode="fill-hex" role="img" aria-label="Fill Hex visualization"><canvas width="200" height="140"></canvas><span>Fill Hex</span></div></div></div>
-
 </section>
-
 <section id="code">
   <h2>Vanilla JS too.</h2>
-<pre><span class="kw">import</span> { PulseEngine } <span class="kw">from</span> <span class="str">'pulsekit'</span>
-
+<pre><span class="kw">import</span> { PulseEngine } <span class="kw">from</span> <span class="str">'usepulsekit'</span>
 <span class="kw">const</span> engine = <span class="kw">new</span> PulseEngine({ value: 50, mode: <span class="str">'gauge'</span> })
 engine.mount(document.querySelector(<span class="str">'canvas'</span>))
 engine.start()
-
 setInterval(() =&gt; engine.setValue(Math.random() * 100), 1000)</pre>
 </section>
-
 <section>
   <h2>How it works.</h2>
   <p>One canvas, one requestAnimationFrame loop. When a new value arrives, nothing jumps. The display lerps toward the target at 8% per frame. History, momentum, and color all follow the same interpolation. That's why every mode feels like one thing breathing rather than parts updating independently.</p>
 </section>
-
 <section>
   <p>Experimental software. DYOR. Built by <a href="https://github.com/dragoon0x">0xDragoon</a>.</p>
 </section>
-
 </div>
 </main>
-
-<footer><p>PulseKit v2.0.0 &middot; 132 modes &middot; 25 categories &middot; 60fps &middot; 0 deps &middot; MIT &middot; 0xDragoon</p></footer>
-
+<footer><p>usepulsekit v2.0.0 &middot; 132 modes &middot; 25 categories &middot; 60fps &middot; 0 deps &middot; MIT &middot; 0xDragoon</p></footer>
 <script>
 (function(){
 var TAU=Math.PI*2;
 function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y)}
 function drawStar(ctx,cx,cy,r,fill,pc){var spikes=5,step=Math.PI/spikes;ctx.beginPath();for(var i=0;i<spikes*2;i++){var radius=i%2===0?r:r*.45;var angle=i*step-Math.PI/2;i===0?ctx.moveTo(cx+Math.cos(angle)*radius,cy+Math.sin(angle)*radius):ctx.lineTo(cx+Math.cos(angle)*radius,cy+Math.sin(angle)*radius)}ctx.closePath();ctx.fillStyle=fill>=1?pc:fill>0?pc+'60':'#e2e2e2';ctx.fill()}
-
-// Monochrome palette — all greys
 var P={primary:'#555',primaryRgb:[85,85,85],glow:'rgba(85,85,85,0.25)',dim:'#ccc',bg:'#fff',fg:'#111',grid:'#e8e8e8',text:'#888',muted:'#bbb',warn:'#999',warnRgb:[153,153,153],danger:'#444',dangerRgb:[68,68,68],up:'#666',down:'#999'};
-
 var cells=[];
 var t=0;
-
 document.querySelectorAll('.mode-cell').forEach(function(el){
   var cv=el.querySelector('canvas');
   var dpr=Math.min(window.devicePixelRatio||1,2);
@@ -219,8 +176,6 @@ document.querySelectorAll('.mode-cell').forEach(function(el){
   var mode=el.getAttribute('data-mode');
   cells.push({el:el,cv:cv,ctx:ctx,mode:mode,v:20+Math.random()*60,dv:0.5,h:[],visible:false});
 });
-
-// IntersectionObserver for performance — only render visible
 var obs=new IntersectionObserver(function(entries){
   entries.forEach(function(e){
     var idx=cells.findIndex(function(c){return c.el===e.target});
@@ -228,21 +183,13 @@ var obs=new IntersectionObserver(function(entries){
   });
 },{rootMargin:'100px'});
 cells.forEach(function(c){obs.observe(c.el)});
-
-// ═══ Simplified renderers for landing page (monochrome) ═══
-// Each mode gets a lightweight canvas renderer
 var R={};
-
-// Helper: all modes that are simple arc/ring variations
 function arcMode(ctx,W,H,d,startFrac,endFrac,lw,capRound){
   var cx=W/2,cy=H/2,r=Math.min(W,H)*.38;
   var sa=-Math.PI/2+startFrac*TAU,ea=-Math.PI/2+endFrac*TAU;
   ctx.beginPath();ctx.arc(cx,cy,r,sa===ea?0:sa,sa===ea?TAU:ea);ctx.strokeStyle=P.grid;ctx.lineWidth=lw||6;if(capRound)ctx.lineCap='round';ctx.stroke();
   if(d>.001){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+TAU*d);ctx.strokeStyle=P.primary;ctx.lineWidth=lw||6;if(capRound)ctx.lineCap='round';ctx.stroke()}
 }
-
-// Register all 132 simplified renderers
-// Core 30
 R['ring']=function(c,W,H,d,t2){arcMode(c,W,H,d,0,1,8,true)};
 R['gauge']=function(c,W,H,d,t2){var cx=W/2,cy=H*.62,r=50;c.beginPath();c.arc(cx,cy,r,Math.PI,TAU);c.strokeStyle=P.grid;c.lineWidth=5;c.lineCap='round';c.stroke();c.beginPath();c.arc(cx,cy,r,Math.PI,Math.PI+Math.PI*d);c.strokeStyle=P.primary;c.lineWidth=5;c.lineCap='round';c.stroke();var na=Math.PI+Math.PI*d;c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+Math.cos(na)*r*.78,cy+Math.sin(na)*r*.78);c.strokeStyle=P.fg;c.lineWidth=1.5;c.stroke()};
 R['bar']=function(c,W,H,d){var bh=14,y=H/2-bh/2;c.fillStyle=P.grid;c.beginPath();rr(c,16,y,W-32,bh,bh/2);c.fill();if(d>0){c.fillStyle=P.primary;c.beginPath();rr(c,16,y,Math.max(bh,(W-32)*d),bh,bh/2);c.fill()}};
@@ -273,31 +220,24 @@ R['progress']=function(c,W,H,d){var bh=6,y=H/2-3;c.fillStyle=P.grid;c.beginPath(
 R['arc']=function(c,W,H,d){var cx=W/2,cy=H/2,r=44,sa=Math.PI/2+.3,ea=Math.PI*2.5-.3;c.beginPath();c.arc(cx,cy,r,sa,ea);c.strokeStyle=P.grid;c.lineWidth=12;c.lineCap='round';c.stroke();if(d>.001){c.beginPath();c.arc(cx,cy,r,sa,sa+(ea-sa)*d);c.strokeStyle=P.primary;c.lineWidth=12;c.lineCap='round';c.stroke()}};
 R['segments']=function(c,W,H,d){var cx=W/2,cy=H/2,r=44,n=20,sg=.03,sa=(TAU-n*sg)/n,lit=Math.floor(d*n);for(var j=0;j<n;j++){var a=-Math.PI/2+j*(sa+sg);c.beginPath();c.arc(cx,cy,r,a,a+sa);c.strokeStyle=j<lit?P.primary:P.grid;c.lineWidth=6;c.stroke()}};
 R['binary']=function(c,W,H,d){var cols=6,rows=3,cw=(W-14)/cols,ch=(H-14)/rows,lit=Math.floor(d*18);for(var r=0;r<rows;r++)for(var co=0;co<cols;co++){c.fillStyle=(r*cols+co)<lit?P.primary:P.grid;c.beginPath();rr(c,7+co*cw+1,7+r*ch+1,cw-2,ch-2,3);c.fill()}};
-
-// For all remaining 102 modes — use simple fallback renderers by type
 function genericArc(c,W,H,d,lw,cap){arcMode(c,W,H,d,0,1,lw||6,cap!==false)}
 function genericBar(c,W,H,d){R['bar'](c,W,H,d)}
 function genericText(c,W,H,d,t2,hist,v,label){c.font='700 30px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.fg;c.fillText(label||Math.round(v),W/2,H/2)}
 function genericSpark(c,W,H,d,t2,hist){R['spark'](c,W,H,d,t2,hist)}
 function genericWave(c,W,H,d,t2,hist,v,fn){R['wave'](c,W,H,d,t2)}
 function genericDot(c,W,H,d,t2){R['dot'](c,W,H,d,t2)}
-
-// Map remaining modes to appropriate renderers
 var arcModes=['donut','knob','dial','pressure','speedometer','gauge-mini','gauge-neon','ring-thick','ring-thin','ring-dashed','ring-gradient','meter-arc','meter-segment','radial-bar','fill-circle'];
 var barModes=['slider','step','progress','gauge-flat','meter-horizontal'];
 var waveModes=['oscilloscope','seismograph','ecg','pulse-wave','sawtooth','square-wave','wave-square','wave-triangle','wave-noise','wave-pulse'];
 var sparkModes=['crypto','latency','spark-bar','spark-area','spark-dot','spark-step'];
 var dotModes=['loading','spinner','dots-loading','pulse-loading','status','indicator'];
 var textModes=['decibel','uptime','oxygen','temperature','percentage','currency','timer','countdown','rank','score','rating','badge','chip','tag','seven-seg','gauge-digital','meter-digital','stock'];
-
 arcModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d){genericArc(c,W,H,d)}});
 barModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d){genericBar(c,W,H,d)}});
 waveModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2){genericWave(c,W,H,d,t2)}});
 sparkModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2,hist){genericSpark(c,W,H,d,t2,hist)}});
 dotModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2){genericDot(c,W,H,d,t2)}});
 textModes.forEach(function(m){if(!R[m])R[m]=function(c,W,H,d,t2,hist,v){genericText(c,W,H,d,t2,hist,v)}});
-
-// Unique renderers for specific modes
 R['pie']=function(c,W,H,d){var cx=W/2,cy=H/2,r=42;c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+TAU*d);c.closePath();c.fillStyle=P.primary;c.fill();c.beginPath();c.moveTo(cx,cy);c.arc(cx,cy,r,-Math.PI/2+TAU*d,-Math.PI/2+TAU);c.closePath();c.fillStyle=P.grid;c.fill()};
 R['spiral']=function(c,W,H,d,t2){var cx=W/2,cy=H/2;c.beginPath();for(var a=0;a<d*TAU*3;a+=.06){var r=(a/(TAU*3))*42;c.lineTo(cx+Math.cos(a+t2)*r,cy+Math.sin(a+t2)*r)}c.strokeStyle=P.primary;c.lineWidth=1.5;c.stroke()};
 R['helix']=function(c,W,H,d,t2){var amp=H*.25*d;for(var s2=0;s2<2;s2++){c.beginPath();for(var x=0;x<=W;x+=2){var y=H/2+Math.sin(x/W*8+t2*2+s2*Math.PI)*amp*(s2?1:-1)*.5+Math.cos(x/W*8+t2*2+s2*Math.PI)*amp*.5;x===0?c.moveTo(x,y):c.lineTo(x,y)}c.strokeStyle=s2?P.primary:P.dim;c.lineWidth=1.5;c.stroke()}};
@@ -342,8 +282,6 @@ R['fill-hex']=function(c,W,H,d){var cx=W/2,cy=H/2,r=36;function hex(){c.beginPat
 R['health']=function(c,W,H,d){var text=d>.8?'OK':d>.5?'WARN':d>.2?'LOW':'CRIT';c.font='600 '+Math.min(W,H)*.11+'px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.primary;c.fillText(text,W/2,H/2)};
 R['alert']=function(c,W,H,d,t2){if(d>.7){var cx=W/2,cy=H/2,r=22;var flash=Math.sin(t2*6)>.3;c.beginPath();c.moveTo(cx,cy-r);c.lineTo(cx+r*.85,cy+r*.6);c.lineTo(cx-r*.85,cy+r*.6);c.closePath();c.fillStyle=flash?P.primary:'rgba(85,85,85,0.3)';c.fill();c.font='700 '+r*.7+'px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.bg;c.fillText('!',cx,cy+r*.1)}else{c.beginPath();c.arc(W/2,H/2,16,0,TAU);c.fillStyle='rgba(85,85,85,0.2)';c.fill();c.font='700 14px system-ui';c.textAlign='center';c.textBaseline='middle';c.fillStyle=P.fg;c.fillText('\u2713',W/2,H/2)}};
 R['warning']=R['alert'];
-
-// ═══ Main render loop ═══
 function render(){
   t+=0.016;
   for(var i=0;i<cells.length;i++){
