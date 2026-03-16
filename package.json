@@ -1,7 +1,7 @@
 {
-  "name": "pulsekit",
+  "name": "usepulsekit",
   "version": "2.0.0",
-  "description": "Living data components. 30 visualization modes. Ring gauges, VU meters, heartbeat monitors, spectrum analyzers, breathing bubbles, animated tickers. One canvas, 60fps interpolation, two props. Where Liveline gives you the line chart, PulseKit gives you everything else.",
+  "description": "Living data components. 132 modes across 25 categories. Ring gauges, VU meters, heartbeat monitors, spectrum analyzers, radar sweeps, thermometers, compass dials. One canvas, 60fps interpolation, two props. Zero dependencies.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -45,6 +45,7 @@
     "typescript": "^5.3.0"
   },
   "keywords": [
+<<<<<<< HEAD
     "pulse",
     "data-visualization",
     "live-data",
@@ -63,6 +64,12 @@
     "react",
     "60fps",
     "lerp"
+=======
+    "pulse", "data-visualization", "live-data", "gauge", "meter",
+    "ring", "sparkline", "ticker", "heartbeat", "spectrum", "radar",
+    "canvas", "real-time", "animated", "dashboard", "react", "60fps",
+    "lerp", "thermometer", "compass", "vu-meter", "breathing"
+>>>>>>> d1ff216b2c5639a2057aac3506e77e522fabe6e7
   ],
   "author": "0xDragoon",
   "license": "MIT",
